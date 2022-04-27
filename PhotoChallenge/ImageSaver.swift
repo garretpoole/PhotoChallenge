@@ -11,8 +11,15 @@ class ImageSaver: NSObject {
     var successHandler: (() -> Void)?
     var errorHandler: ((Error) -> Void)?
     
-    func writeToPhotoAlbum(image: UIImage) {
-        
+    func writeToSecureDirectory(uiImage: UIImage, uuid: UUID) {
+        do{
+            if let jpegData = uiImage.jpegData(compressionQuality: 0.8) {
+                let url = FileManager.documentsDirectory.appendingPathComponent("\(uuid).jpg")
+                try jpegData.write(to: url, options: [.atomicWrite, .completeFileProtection])
+            }
+        } catch {
+            return 
+        }
     }
     
     @objc func saveCompleted(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
