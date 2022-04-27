@@ -45,7 +45,6 @@
 		60F8BDE82818AAD900241B21 = {
 			isa = PBXGroup;
 			children = (
-				60D225DD2819FE7D00838FD8 /* PhotoCollection.swift */,
 				60F8BDF32818AAD900241B21 /* PhotoChallenge */,
 				60F8BDF22818AAD900241B21 /* Products */,
 			);
@@ -67,6 +66,7 @@
 				60F8BE022818ACA800241B21 /* ImagePicker.swift */,
 				60F8BE042818AD9B00241B21 /* ImageSaver.swift */,
 				60F8BE082818DBA800241B21 /* Photo.swift */,
+				60D225DD2819FE7D00838FD8 /* PhotoCollection.swift */,
 				60F8BE062818DA5500241B21 /* FileManager-DocDirectory.swift */,
 				60F8BDF82818AADC00241B21 /* Assets.xcassets */,
 				60F8BDFA2818AADC00241B21 /* Preview Content */,
