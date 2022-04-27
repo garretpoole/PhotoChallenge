@@ -8,16 +8,24 @@
 import Foundation
 import SwiftUI
 
-struct Photo: Identifiable, Codable, Equatable {
+struct Photo: Identifiable, Codable, Comparable {
     var id: UUID
     var name: String
-    var imageData: Data
     
     var image: Image? {
-        Image(uiImage: UIImage(data: imageData) ?? UIImage())
+        let url = FileManager.documentsDirectory.appendingPathComponent("\(id).jpg")
+                
+        guard let uiImage = try? UIImage(data: Data(contentsOf: url)) else {
+            print("Error creating UIImage from url \(url)")
+            return nil
+        }
+        
+        return Image(uiImage: uiImage)
     }
     
-    static func ==(lhs: Photo, rhs: Photo) -> Bool {
-        lhs.id == rhs.id
+    static func <(lhs: Photo, rhs: Photo) -> Bool {
+        lhs.name.lowercased() < rhs.name.lowercased()
     }
+    
+    
 }

@@ -11,11 +11,12 @@ class ImageSaver: NSObject {
     var successHandler: (() -> Void)?
     var errorHandler: ((Error) -> Void)?
     
-    func writeToSecureDirectory(uiImage: UIImage, uuid: UUID) {
+    func writeToSecureDirectory(uiImage: UIImage, id: String) {
         do{
             if let jpegData = uiImage.jpegData(compressionQuality: 0.8) {
-                let url = FileManager.documentsDirectory.appendingPathComponent("\(uuid).jpg")
+                let url = FileManager.documentsDirectory.appendingPathComponent("\(id).jpg")
                 try jpegData.write(to: url, options: [.atomicWrite, .completeFileProtection])
+                print("Sucessful write to directory")
             }
         } catch {
             print("Failed to write to directory")

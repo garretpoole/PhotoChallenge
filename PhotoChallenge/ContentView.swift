@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     //final images
-    @State private var photos = [Photo]()
+    @ObservedObject var collection = PhotoCollection()
     @State private var image: Image?
     @State private var label = ""
     
@@ -23,17 +23,17 @@ struct ContentView: View {
     @State private var choosingLabel = false
     
     //data is saved on disc (takes up phone storage) and much more flexible than UserDefaults
-    let savePath = FileManager.documentsDirectory.appendingPathComponent("SavedPhotos")
+    let savePath = FileManager.documentsDirectory.appendingPathComponent("photos.json")
     
     var body: some View {
         NavigationView {
             ScrollView {
-                ForEach(photos) { photo in
+                ForEach(collection.photos.sorted()) { photo in
                     VStack {
                         photo.image?
                             .resizable()
                             .scaledToFit()
-                            .frame(width: .infinity, height: 150)
+                            .frame(height: 150)
                             .padding()
                         Text(photo.name)
                             .font(.headline)
@@ -89,32 +89,41 @@ struct ContentView: View {
     
     //loads data from disc
     init() {
-        do {
-            let data = try Data(contentsOf: savePath)
-            photos = try JSONDecoder().decode([Photo].self, from: data)
-            print("can load")
-        } catch {
-            print("cannot load")
-            photos = []
+        print("url: \(savePath)")
+        
+        guard let data = try? Data(contentsOf: savePath) else {
+            print("fails here so no images")
+            collection.photos = []
+            return
         }
+        guard let decodedPhotos = try? JSONDecoder().decode([Photo].self, from: data) else {
+            print("Failed Here")
+            return
+        }
+        collection.photos = decodedPhotos
+        print("can load")
+        
     }
     
     //file can only be read when device is requested to be unlocked
     func save() {
+        //save Image
+        let imageSaver = ImageSaver()
+        let newPhoto = Photo(id: UUID(), name: label)
+        guard let uiImage = inputImage else { return }
+        
+        imageSaver.writeToSecureDirectory(uiImage: uiImage, id: newPhoto.id.uuidString)
+        collection.photos.append(newPhoto)
+        
+        //save [Photo]
         do {
-            if let jpegData = inputImage?.jpegData(compressionQuality: 0.8) {
-                let photo = Photo(id: UUID(), name: label, imageData: jpegData)
-                photos.append(photo)
-                print("appended")
-            }
-            
-            let data = try JSONEncoder().encode(photos)
-            //.completeFileProtection ensures files are stored with strong encryption
+            let data = try JSONEncoder().encode(collection.photos)
             try data.write(to: savePath, options: [.atomicWrite, .completeFileProtection])
-            print("Saved")
         } catch {
             print("Unable to save data.")
         }
+        
+        label = ""
         choosingLabel = false
     }
     
@@ -123,21 +132,6 @@ struct ContentView: View {
         image = Image(uiImage: uiImage)
         choosingLabel = true
     }
-
-    
-//    func save() {
-//        guard let inputImage = inputImage else { return }
-//        let imageSaver = ImageSaver()
-//
-//        imageSaver.successHandler = {
-//            print("Success!")
-//        }
-//        imageSaver.errorHandler = {
-//            print("Oops! \($0.localizedDescription)")
-//        }
-//        imageSaver.writeToPhotoAlbum(image: inputImage)
-//
-//    }
 }
 
 
