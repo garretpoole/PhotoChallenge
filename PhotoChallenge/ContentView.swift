@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
-    //final image
+    //final images
+    @State private var photos: [Photo]
     @State private var image: Image?
     @State private var label = ""
     
@@ -74,6 +75,16 @@ struct ContentView: View {
                 .padding([.horizontal, .vertical])
             }
             .onChange(of: inputImage) { _ in loadImage() }
+        }
+    }
+    
+    //loads data from disc
+    init() {
+        do {
+            let data = try Data(contentsOf: savePath)
+            photos = try JSONDecoder().decode([Photo].self, from: data)
+        } catch {
+            photos = []
         }
     }
     
