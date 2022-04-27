@@ -61,9 +61,9 @@
 			children = (
 				60F8BDF42818AAD900241B21 /* PhotoChallengeApp.swift */,
 				60F8BDF62818AAD900241B21 /* ContentView.swift */,
-				60F8BE082818DBA800241B21 /* Photo.swift */,
 				60F8BE022818ACA800241B21 /* ImagePicker.swift */,
 				60F8BE042818AD9B00241B21 /* ImageSaver.swift */,
+				60F8BE082818DBA800241B21 /* Photo.swift */,
 				60F8BE062818DA5500241B21 /* FileManager-DocDirectory.swift */,
 				60F8BDF82818AADC00241B21 /* Assets.xcassets */,
 				60F8BDFA2818AADC00241B21 /* Preview Content */,

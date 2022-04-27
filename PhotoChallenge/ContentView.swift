@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     //final images
-    @State private var photos: [Photo]
+    @State private var photos = [Photo]()
     @State private var image: Image?
     @State private var label = ""
     
@@ -27,10 +27,18 @@ struct ContentView: View {
     
     var body: some View {
         NavigationView {
-            List {
-                image?
-                    .resizable()
-                    .scaledToFit()
+            ScrollView {
+                ForEach(photos) { photo in
+                    VStack {
+                        photo.image?
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: .infinity, height: 150)
+                            .padding()
+                        Text(photo.name)
+                            .font(.headline)
+                    }
+                }
             }
             .navigationTitle("Photos")
             .toolbar {
@@ -45,6 +53,7 @@ struct ContentView: View {
             .sheet(isPresented: $showingImagePicker) {
                 ImagePicker(image: $inputImage, cannotSave: $cannotSave)
             }
+            .onChange(of: inputImage) { _ in loadImage() }
             .sheet(isPresented: $choosingLabel) {
                 VStack{
                     image?
@@ -55,7 +64,7 @@ struct ContentView: View {
                         .font(.title)
                     HStack {
                         Button("Save") {
-                            
+                            save()
                         }
                         .frame(width: 100, height: 40)
                         .background(.blue)
@@ -74,7 +83,7 @@ struct ContentView: View {
                 }
                 .padding([.horizontal, .vertical])
             }
-            .onChange(of: inputImage) { _ in loadImage() }
+            
         }
     }
     
@@ -83,14 +92,35 @@ struct ContentView: View {
         do {
             let data = try Data(contentsOf: savePath)
             photos = try JSONDecoder().decode([Photo].self, from: data)
+            print("can load")
         } catch {
+            print("cannot load")
             photos = []
         }
     }
     
+    //file can only be read when device is requested to be unlocked
+    func save() {
+        do {
+            if let jpegData = inputImage?.jpegData(compressionQuality: 0.8) {
+                let photo = Photo(id: UUID(), name: label, imageData: jpegData)
+                photos.append(photo)
+                print("appended")
+            }
+            
+            let data = try JSONEncoder().encode(photos)
+            //.completeFileProtection ensures files are stored with strong encryption
+            try data.write(to: savePath, options: [.atomicWrite, .completeFileProtection])
+            print("Saved")
+        } catch {
+            print("Unable to save data.")
+        }
+        choosingLabel = false
+    }
+    
     func loadImage() {
-        guard let inputImage = inputImage else { return }
-        image = Image(uiImage: inputImage)
+        guard let uiImage = inputImage else { return }
+        image = Image(uiImage: uiImage)
         choosingLabel = true
     }
 
