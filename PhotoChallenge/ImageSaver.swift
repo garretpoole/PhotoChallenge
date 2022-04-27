@@ -18,7 +18,7 @@ class ImageSaver: NSObject {
                 try jpegData.write(to: url, options: [.atomicWrite, .completeFileProtection])
             }
         } catch {
-            return 
+            print("Failed to write to directory")
         }
     }
     
