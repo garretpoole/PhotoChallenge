@@ -11,7 +11,7 @@ struct ContentView: View {
     //final images
     @ObservedObject var collection = PhotoCollection()
     @State private var image: Image?
-    @State private var label = ""
+    @State private var name = ""
     
     //image picker
     @State private var showingImagePicker = false
@@ -20,88 +20,63 @@ struct ContentView: View {
     let context = CIContext()
     
     //name the image
-    @State private var choosingLabel = false
+    @State private var choosingName = false
+    @State private var saveName = false
     
     //data is saved on disc (takes up phone storage) and much more flexible than UserDefaults
     let savePath = FileManager.documentsDirectory.appendingPathComponent("photos.json")
     
     var body: some View {
-        NavigationView {
-            ScrollView {
-                ForEach(collection.photos.sorted()) { photo in
-                    VStack {
-                        photo.image?
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 150)
-                            .padding()
-                        Text(photo.name)
-                            .font(.headline)
-                    }
+        if choosingName {
+            EditNameView(image: image, name: $name, saveName: $saveName, choosingName: $choosingName)
+                .onChange(of: saveName) { _ in
+                    save()
                 }
-            }
-            .navigationTitle("Photos")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        showingImagePicker.toggle()
-                    } label: {
-                        Label("Add Photo", systemImage: "plus")
-                    }
-                }
-            }
-            .sheet(isPresented: $showingImagePicker) {
-                ImagePicker(image: $inputImage, cannotSave: $cannotSave)
-            }
-            .onChange(of: inputImage) { _ in loadImage() }
-            .sheet(isPresented: $choosingLabel) {
-                VStack{
-                    image?
-                        .resizable()
-                        .scaledToFit()
-                    TextField("Name", text: $label)
-                        .padding(.horizontal)
-                        .font(.title)
-                    HStack {
-                        Button("Save") {
-                            save()
+        } else {
+            NavigationView {
+                ScrollView {
+                    ForEach(collection.photos.sorted()) { photo in
+                        VStack {
+                            photo.image?
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 150)
+                                .padding()
+                            Text(photo.name)
+                                .font(.headline)
                         }
-                        .frame(width: 100, height: 40)
-                        .background(.blue)
-                        .clipShape(Capsule())
-                        .foregroundColor(.white)
-                        
-                        Button("Cancel") {
-                            choosingLabel = false
-                        }
-                        .frame(width: 100, height: 40)
-                        .background(.red)
-                        .clipShape(Capsule())
-                        .foregroundColor(.white)
                     }
-                    
                 }
-                .padding([.horizontal, .vertical])
+                .navigationTitle("Photos")
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            showingImagePicker.toggle()
+                        } label: {
+                            Label("Add Photo", systemImage: "plus")
+                        }
+                    }
+                }
+                .sheet(isPresented: $showingImagePicker, onDismiss: loadImage) {
+                    ImagePicker(image: $inputImage, cannotSave: $cannotSave)
+                }
+                
             }
-            
         }
     }
     
     //loads data from disc
     init() {
-        print("url: \(savePath)")
-        
         guard let data = try? Data(contentsOf: savePath) else {
-            print("fails here so no images")
+            print("No existing saved data")
             collection.photos = []
             return
         }
         guard let decodedPhotos = try? JSONDecoder().decode([Photo].self, from: data) else {
-            print("Failed Here")
+            print("Could not decode photos")
             return
         }
         collection.photos = decodedPhotos
-        print("can load")
         
     }
     
@@ -109,7 +84,7 @@ struct ContentView: View {
     func save() {
         //save Image
         let imageSaver = ImageSaver()
-        let newPhoto = Photo(id: UUID(), name: label)
+        let newPhoto = Photo(id: UUID(), name: name)
         guard let uiImage = inputImage else { return }
         
         imageSaver.writeToSecureDirectory(uiImage: uiImage, id: newPhoto.id.uuidString)
@@ -122,15 +97,14 @@ struct ContentView: View {
         } catch {
             print("Unable to save data.")
         }
-        
-        label = ""
-        choosingLabel = false
+        choosingName = false
+        name = ""
     }
     
     func loadImage() {
         guard let uiImage = inputImage else { return }
         image = Image(uiImage: uiImage)
-        choosingLabel = true
+        choosingName = true
     }
 }
 
