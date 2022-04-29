@@ -36,14 +36,18 @@ struct ContentView: View {
             NavigationView {
                 ScrollView {
                     ForEach(collection.photos.sorted()) { photo in
-                        VStack {
-                            photo.image?
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 150)
-                                .padding()
-                            Text(photo.name)
-                                .font(.headline)
+                        NavigationLink {
+                            DetailView(image: photo.image, name: photo.name)
+                        } label: {
+                            VStack {
+                                photo.image?
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 150)
+                                    .padding()
+                                Text(photo.name)
+                                    .font(.headline)
+                            }
                         }
                     }
                 }
