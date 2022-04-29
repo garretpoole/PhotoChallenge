@@ -64,7 +64,6 @@ struct ContentView: View {
                 .sheet(isPresented: $showingImagePicker, onDismiss: loadImage) {
                     ImagePicker(image: $inputImage, cannotSave: $cannotSave)
                 }
-                
             }
         }
     }
@@ -81,7 +80,6 @@ struct ContentView: View {
             return
         }
         collection.photos = decodedPhotos
-        
     }
     
     //file can only be read when device is requested to be unlocked
