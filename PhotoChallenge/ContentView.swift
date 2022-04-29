@@ -90,9 +90,9 @@ struct ContentView: View {
         //save Image
         let imageSaver = ImageSaver()
         var newPhoto = Photo(id: UUID(), name: name)
-        if let location = locationFetcher.lastKnownLocation {
-            newPhoto.latitude = location.latitude
-            newPhoto.longitude = location.longitude
+        //TODO: Fix bug setting location
+        if let location = self.locationFetcher.lastKnownLocation {
+            newPhoto.setLocation(location: location)
         } else {
             print("location unknown")
         }
@@ -115,7 +115,7 @@ struct ContentView: View {
     func loadImage() {
         guard let uiImage = inputImage else { return }
         image = Image(uiImage: uiImage)
-        locationFetcher.start()
+        self.locationFetcher.start()
         choosingName = true
     }
 }

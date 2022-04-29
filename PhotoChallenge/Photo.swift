@@ -33,6 +33,11 @@ struct Photo: Identifiable, Codable, Comparable {
         return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
     
+    mutating func setLocation(location: CLLocationCoordinate2D) {
+        self.longitude = location.longitude
+        self.latitude = location.latitude
+    }
+    
     static func <(lhs: Photo, rhs: Photo) -> Bool {
         lhs.name.lowercased() < rhs.name.lowercased()
     }

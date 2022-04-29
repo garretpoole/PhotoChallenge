@@ -7,16 +7,22 @@
 
 import SwiftUI
 import MapKit
+import AVFAudio
+
+struct LocationMarker: Identifiable {
+    let id = UUID()
+    let coordinate: CLLocationCoordinate2D
+}
 
 struct DetailView: View {
     let photo: Photo
     
-//    var mapRegion: MKCoordinateRegion? {
-//        guard let center = photo.location else {
-//            return nil
-//        }
-//        return MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 25, longitudeDelta: 25))
-//    }
+    var markers: [LocationMarker] {
+            if let location = photo.location {
+                return [LocationMarker(coordinate: location)]
+            }
+            return []
+        }
     
     var body: some View {
         VStack(alignment: .leading){
@@ -29,11 +35,13 @@ struct DetailView: View {
                     Text("Location")
                         .font(.headline)
                         .padding(.horizontal)
-                    Map(coordinateRegion: .constant(MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 25, longitudeDelta: 25))))
-                        
+                    Map(coordinateRegion: .constant(MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 25, longitudeDelta: 25))), annotationItems: markers) { item in
+                        MapPin(coordinate: item.coordinate)
                     }
                 }
+                .padding()
             }
+        }
         .navigationTitle(photo.name)
         .navigationBarTitleDisplayMode(.inline)
     }
