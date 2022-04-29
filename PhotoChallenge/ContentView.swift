@@ -71,51 +71,30 @@ struct ContentView: View {
         }
     }
     
-    //loads data from disc
-    init() {
-        guard let data = try? Data(contentsOf: savePath) else {
-            print("No existing saved data")
-            collection.photos = []
-            return
-        }
-        guard let decodedPhotos = try? JSONDecoder().decode([Photo].self, from: data) else {
-            print("Could not decode photos")
-            return
-        }
-        collection.photos = decodedPhotos
-    }
-    
     //file can only be read when device is requested to be unlocked
     func save() {
         //save Image
         let imageSaver = ImageSaver()
         var newPhoto = Photo(id: UUID(), name: name)
-        //TODO: Fix bug setting location
-        if let location = self.locationFetcher.lastKnownLocation {
+        if let location = locationFetcher.lastKnownLocation {
             newPhoto.setLocation(location: location)
         } else {
             print("location unknown")
         }
-        
         guard let uiImage = inputImage else { return }
         imageSaver.writeToSecureDirectory(uiImage: uiImage, id: newPhoto.id.uuidString)
+        //save [Photo] when setting PhotoCollection
         collection.photos.append(newPhoto)
         
-        //save [Photo]
-        do {
-            let data = try JSONEncoder().encode(collection.photos)
-            try data.write(to: savePath, options: [.atomicWrite, .completeFileProtection])
-        } catch {
-            print("Unable to save data.")
-        }
         choosingName = false
         name = ""
     }
     
     func loadImage() {
+        //need image for displaying in EditNameView
         guard let uiImage = inputImage else { return }
         image = Image(uiImage: uiImage)
-        self.locationFetcher.start()
+        locationFetcher.start()
         choosingName = true
     }
 }
