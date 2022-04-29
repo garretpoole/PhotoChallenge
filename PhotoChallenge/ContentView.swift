@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct ContentView: View {
+    //data is saved on disc (takes up phone storage) and much more flexible than UserDefaults
+    let savePath = FileManager.documentsDirectory.appendingPathComponent("photos.json")
+    
     //final images
     @ObservedObject var collection = PhotoCollection()
     @State private var image: Image?
@@ -23,8 +26,8 @@ struct ContentView: View {
     @State private var choosingName = false
     @State private var saveName = false
     
-    //data is saved on disc (takes up phone storage) and much more flexible than UserDefaults
-    let savePath = FileManager.documentsDirectory.appendingPathComponent("photos.json")
+    //location of image
+    let locationFetcher = LocationFetcher()
     
     var body: some View {
         if choosingName {
@@ -37,7 +40,7 @@ struct ContentView: View {
                 ScrollView {
                     ForEach(collection.photos.sorted()) { photo in
                         NavigationLink {
-                            DetailView(image: photo.image, name: photo.name)
+                            DetailView(photo: photo)
                         } label: {
                             VStack {
                                 photo.image?
@@ -86,9 +89,15 @@ struct ContentView: View {
     func save() {
         //save Image
         let imageSaver = ImageSaver()
-        let newPhoto = Photo(id: UUID(), name: name)
-        guard let uiImage = inputImage else { return }
+        var newPhoto = Photo(id: UUID(), name: name)
+        if let location = locationFetcher.lastKnownLocation {
+            newPhoto.latitude = location.latitude
+            newPhoto.longitude = location.longitude
+        } else {
+            print("location unknown")
+        }
         
+        guard let uiImage = inputImage else { return }
         imageSaver.writeToSecureDirectory(uiImage: uiImage, id: newPhoto.id.uuidString)
         collection.photos.append(newPhoto)
         
@@ -106,6 +115,7 @@ struct ContentView: View {
     func loadImage() {
         guard let uiImage = inputImage else { return }
         image = Image(uiImage: uiImage)
+        locationFetcher.start()
         choosingName = true
     }
 }

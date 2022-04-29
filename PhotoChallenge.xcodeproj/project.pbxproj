@@ -10,7 +10,6 @@
 		60D225DE2819FE7D00838FD8 /* PhotoCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D225DD2819FE7D00838FD8 /* PhotoCollection.swift */; };
 		60D225E0281A028800838FD8 /* EditNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D225DF281A028800838FD8 /* EditNameView.swift */; };
 		60D225E2281B713C00838FD8 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D225E1281B713C00838FD8 /* DetailView.swift */; };
-		60D225E4281B769000838FD8 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D225E3281B769000838FD8 /* Location.swift */; };
 		60D225E6281B774C00838FD8 /* LocationFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60D225E5281B774C00838FD8 /* LocationFetcher.swift */; };
 		60F8BDF52818AAD900241B21 /* PhotoChallengeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60F8BDF42818AAD900241B21 /* PhotoChallengeApp.swift */; };
 		60F8BDF72818AAD900241B21 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60F8BDF62818AAD900241B21 /* ContentView.swift */; };
@@ -26,7 +25,6 @@
 		60D225DD2819FE7D00838FD8 /* PhotoCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCollection.swift; sourceTree = "<group>"; };
 		60D225DF281A028800838FD8 /* EditNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNameView.swift; sourceTree = "<group>"; };
 		60D225E1281B713C00838FD8 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
-		60D225E3281B769000838FD8 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		60D225E5281B774C00838FD8 /* LocationFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationFetcher.swift; sourceTree = "<group>"; };
 		60F8BDF12818AAD900241B21 /* PhotoChallenge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoChallenge.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		60F8BDF42818AAD900241B21 /* PhotoChallengeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoChallengeApp.swift; sourceTree = "<group>"; };
@@ -73,9 +71,8 @@
 				60F8BDF62818AAD900241B21 /* ContentView.swift */,
 				60D225E1281B713C00838FD8 /* DetailView.swift */,
 				60D225DF281A028800838FD8 /* EditNameView.swift */,
-				60D225E3281B769000838FD8 /* Location.swift */,
-				60D225E5281B774C00838FD8 /* LocationFetcher.swift */,
 				60F8BE082818DBA800241B21 /* Photo.swift */,
+				60D225E5281B774C00838FD8 /* LocationFetcher.swift */,
 				60D225DD2819FE7D00838FD8 /* PhotoCollection.swift */,
 				60F8BE022818ACA800241B21 /* ImagePicker.swift */,
 				60F8BE042818AD9B00241B21 /* ImageSaver.swift */,
@@ -166,7 +163,6 @@
 			files = (
 				60F8BE092818DBA800241B21 /* Photo.swift in Sources */,
 				60D225E2281B713C00838FD8 /* DetailView.swift in Sources */,
-				60D225E4281B769000838FD8 /* Location.swift in Sources */,
 				60F8BE072818DA5500241B21 /* FileManager-DocDirectory.swift in Sources */,
 				60D225E6281B774C00838FD8 /* LocationFetcher.swift in Sources */,
 				60D225DE2819FE7D00838FD8 /* PhotoCollection.swift in Sources */,
